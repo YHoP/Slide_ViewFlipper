@@ -6,28 +6,38 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
 
 public class PagerAdapter extends FragmentPagerAdapter {
 
-    public static String [] images;
+    private String [] imagesArray;
 
     public PagerAdapter(FragmentManager fm, Context context) {
         super(fm);
-
         Resources resources = context.getResources();
-        images = resources.getStringArray(R.array.images);
+        imagesArray = resources.getStringArray(R.array.images);
     }
 
     @Override
     public Fragment getItem(int position) {
+        Log.i("Current image position", String.valueOf(position));
         PagerFragment pagerFragment = new PagerFragment();
+
+        int index = position - 1;
+        if (position == 0) {
+            index = imagesArray.length - 1;
+        } else if (position == imagesArray.length + 1) {
+            index = 0;
+        }
+        int newPosition = index;
+
         Bundle args = new Bundle();
-        args.putInt(pagerFragment.ImageIDKey, getImageId(position));
+        args.putInt(pagerFragment.ImageIDKey, getImageId(newPosition));
         pagerFragment.setArguments(args);
         return pagerFragment;
     }
 
-    public static int getImageId(int position){
+    private int getImageId(int position){
         int id = 0;
         switch (position){
             case 0:
@@ -46,22 +56,7 @@ public class PagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return images.length;
+        return imagesArray.length + 2;
     }
 
-    public static int getImagePosition(int imageId){
-        int imagePosition = 0;
-        switch (imageId){
-            case R.drawable.image01:
-                imagePosition = 0;
-                break;
-            case R.drawable.image02:
-                imagePosition = 1;
-                break;
-            case R.drawable.image03:
-                imagePosition = 2;
-                break;
-        }
-        return imagePosition;
-    }
 }
