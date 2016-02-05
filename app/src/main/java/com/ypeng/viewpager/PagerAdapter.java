@@ -11,7 +11,7 @@ import android.util.Log;
 public class PagerAdapter extends FragmentPagerAdapter{
 
     private String [] imagesArray;
-    public static int imagesArrayLength = 0;
+    private int imagesArrayLength = 0;
 
     public PagerAdapter(FragmentManager fm, Context context) {
         super(fm);

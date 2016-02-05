@@ -35,9 +35,6 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
             @Override
             public void run() {
                 mCurrentImage++;
-                if(mCurrentImage > mPagerAdapter.getCount()) {
-                    mCurrentImage = 0;
-                }
                 mViewPager.setCurrentItem(mCurrentImage, true);
             }
         };
@@ -51,6 +48,13 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     }
 
     @Override
+    public void onPageScrollStateChanged(int state) {
+        if (state == ViewPager.SCROLL_STATE_IDLE) {
+            mCurrentImage = mViewPager.getCurrentItem();
+        }
+    }
+
+    @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
     }
@@ -58,18 +62,5 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     @Override
     public void onPageSelected(int position) {
 
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-        if (state == ViewPager.SCROLL_STATE_IDLE) {
-            mCurrentImage = mViewPager.getCurrentItem();
-            int lastReal = mViewPager.getAdapter().getCount() - 2;
-            if (mCurrentImage == 0) {
-                mViewPager.setCurrentItem(lastReal, false);
-            } else if (mCurrentImage > lastReal) {
-                mViewPager.setCurrentItem(1, false);
-            }
-        }
     }
 }
