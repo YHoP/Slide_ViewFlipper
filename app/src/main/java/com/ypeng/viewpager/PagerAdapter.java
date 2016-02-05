@@ -50,6 +50,6 @@ public class PagerAdapter extends FragmentPagerAdapter{
 
     @Override
     public int getCount() {
-        return Integer.MAX_VALUE;
+        return imagesArray.length;
     }
 }
