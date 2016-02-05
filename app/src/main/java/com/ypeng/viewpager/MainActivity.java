@@ -8,11 +8,11 @@ import android.support.v7.app.AppCompatActivity;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener{
+public class MainActivity extends AppCompatActivity {
 
     private PagerAdapter mPagerAdapter;
     private ViewPager mViewPager;
-    private int mCurrentImage = 0;
+    private int mCurrentPosition = 0;
     private Timer mTimer;
     private Handler mHandler;
 
@@ -20,22 +20,48 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mTimer = new Timer();
-        mHandler = new Handler();
+        initTimer();
         mViewPager = (ViewPager) findViewById(R.id.pager);
         setUpViewPager();
+
+        mViewPager.setOnTouchListener(new OnSwipeTouchListener(this) {
+            public void onSwipeRight() {
+                if(mCurrentPosition == 0 ) {
+                    mCurrentPosition = mPagerAdapter.getCount();
+                }
+                mViewPager.setCurrentItem(mCurrentPosition, true);
+            }
+
+            public void onSwipeLeft() {
+                if(mCurrentPosition < mPagerAdapter.getCount() - 1) {
+                    mCurrentPosition++;
+                } else {
+                    mCurrentPosition = 0;
+                }
+                mViewPager.setCurrentItem(mCurrentPosition, true);
+            }
+        });
+    }
+
+    private void initTimer() {
+        mTimer = new Timer();
+        mHandler = new Handler();
     }
 
     private void setUpViewPager() {
         mPagerAdapter = new PagerAdapter(getSupportFragmentManager(), this);
         mViewPager.setAdapter(mPagerAdapter);
-        mViewPager.setCurrentItem(mCurrentImage);
+        mViewPager.setCurrentItem(mCurrentPosition);
 
         final Runnable changeCurrentImage = new Runnable() {
             @Override
             public void run() {
-                mCurrentImage++;
-                mViewPager.setCurrentItem(mCurrentImage, true);
+                if(mCurrentPosition < mPagerAdapter.getCount() - 1) {
+                    mCurrentPosition++;
+                } else {
+                    mCurrentPosition = 0;
+                }
+                mViewPager.setCurrentItem(mCurrentPosition, true);
             }
         };
 
@@ -47,20 +73,23 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         }, 3000, 3000);
     }
 
-    @Override
-    public void onPageScrollStateChanged(int state) {
-        if (state == ViewPager.SCROLL_STATE_IDLE) {
-            mCurrentImage = mViewPager.getCurrentItem();
-        }
-    }
-
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-
-    }
+//    @Override
+//    public void onPageScrollStateChanged(int state) {
+//        if (state == ViewPager.SCROLL_STATE_IDLE) {
+//            mCurrentPosition = mViewPager.getCurrentItem();
+//            initTimer();
+//        }
+//    }
+//
+//    @Override
+//    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//        mCurrentPosition = position;
+//        initTimer();
+//    }
+//
+//    @Override
+//    public void onPageSelected(int position) {
+//        mCurrentPosition = position;
+//        initTimer();
+//    }
 }
