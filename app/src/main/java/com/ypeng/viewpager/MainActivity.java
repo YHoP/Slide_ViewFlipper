@@ -48,7 +48,6 @@ public class MainActivity extends Activity {
                 mViewFlipper.showNext();
             }
         };
-
         mTimer.schedule(new TimerTask() {
             @Override
             public void run() {
