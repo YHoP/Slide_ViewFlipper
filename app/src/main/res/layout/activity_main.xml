@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <ViewFlipper
         android:id="@+id/view_flipper"
@@ -14,19 +14,25 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:background="#ffffff"
-            android:src="@drawable/image01" />
+            android:src="@drawable/image01"
+            android:clickable="true"
+            android:onClick="onClick" />
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:background="#ffffff"
-            android:src="@drawable/image02" />
+            android:src="@drawable/image02"
+            android:clickable="true"
+            android:onClick="onClick" />
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:background="#ffffff"
-            android:src="@drawable/image03" />
+            android:src="@drawable/image03"
+            android:clickable="true"
+            android:onClick="onClick" />
 
     </ViewFlipper>
 

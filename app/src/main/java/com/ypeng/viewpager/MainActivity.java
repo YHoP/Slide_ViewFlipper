@@ -1,6 +1,8 @@
 package com.ypeng.viewpager;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.GestureDetector;
@@ -36,7 +38,11 @@ public class MainActivity extends Activity {
         mViewFlipper.setDisplayedChild(0);
         initAnimations();
         setAutoPlay();
+    }
 
+    public void onClick(View view) {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
+        startActivity(browserIntent);
     }
 
     private void setAutoPlay(){
@@ -53,7 +59,7 @@ public class MainActivity extends Activity {
             public void run() {
                 mHandler.post(changeCurrentImage);
             }
-        }, 3000, 3000);
+        }, 5000, 5000);
     }
 
     private void initAnimations() {
