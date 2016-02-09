@@ -14,25 +14,22 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:background="#ffffff"
-            android:src="@drawable/image01"
-            android:clickable="true"
-            android:onClick="onClick" />
+            android:id="@+id/image_01"
+            android:src="@drawable/image01" />
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:background="#ffffff"
-            android:src="@drawable/image02"
-            android:clickable="true"
-            android:onClick="onClick" />
+            android:id="@+id/image_02"
+            android:src="@drawable/image02" />
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:background="#ffffff"
-            android:src="@drawable/image03"
-            android:clickable="true"
-            android:onClick="onClick" />
+            android:id="@+id/image_03"
+            android:src="@drawable/image03" />
 
     </ViewFlipper>
 
