@@ -15,8 +15,18 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.ViewFlipper;
 
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static android.view.ViewGroup.LayoutParams;
 
 public class MainActivity extends Activity {
 
@@ -25,27 +35,68 @@ public class MainActivity extends Activity {
     private Animation mInFromLeft;
     private Animation mOutToRight;
     private ViewFlipper mViewFlipper;
-    private ImageView image01, image02, image03;
     private Timer mTimer;
     private Handler mHandler;
     private GestureDetector gestureDetector;
     private int mId;
+    private List<Team> mTeam = new ArrayList<Team>();
 
-    /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        Firebase.setAndroidContext(this);
+//        initTeamInfo();
+        getFirebaseData();
+
         mTimer = new Timer();
         mHandler = new Handler();
 
-        mViewFlipper = (ViewFlipper) findViewById(R.id.view_flipper);
-        image01 = (ImageView) findViewById(R.id.image_01);
-        image02 = (ImageView) findViewById(R.id.image_02);
-        image03 = (ImageView) findViewById(R.id.image_03);
-        mViewFlipper.setDisplayedChild(0);
         initAnimations();
         setAutoPlay();
+
+        setContentView(R.layout.activity_main);
+        gestureDetector = new GestureDetector(new MyGestureDetector());
+    }
+
+    View.OnTouchListener gestureListener = new View.OnTouchListener() {
+        public boolean onTouch(View view, MotionEvent event) {
+            mId = view.getId();
+            if (gestureDetector.onTouchEvent(event)) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+    };
+
+    private void getFirebaseData(){
+        Firebase firebaseRef = new Firebase("https://view-flipper-ad.firebaseio.com/team");
+        firebaseRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot contentSnapshot : dataSnapshot.getChildren()) {
+                    Team team = contentSnapshot.getValue(Team.class);
+                    mTeam.add(team);
+                }
+
+                for (int i = 0; i < mTeam.size(); i++) {
+                    ImageView imageView = new ImageView(MainActivity.this);
+                    imageView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 600));
+                    imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                    Picasso.with(MainActivity.this).load(mTeam.get(i).getImage()).into(imageView);
+                    imageView.setId(i);
+                    imageView.setOnTouchListener(gestureListener);
+                    mViewFlipper = (ViewFlipper) findViewById(R.id.view_flipper);
+                    mViewFlipper.addView(imageView);
+                }
+                mViewFlipper.setDisplayedChild(0);
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.e("The read failed: ", firebaseError.getMessage());
+            }
+        });
     }
 
     private void setAutoPlay(){
@@ -94,25 +145,6 @@ public class MainActivity extends Activity {
                 Animation.RELATIVE_TO_PARENT, 0.0f);
         mOutToLeft.setDuration(500);
         mOutToLeft.setInterpolator(accelerateInterpolator);
-
-
-        gestureDetector = new GestureDetector(new MyGestureDetector());
-
-        View.OnTouchListener gestureListener = new View.OnTouchListener() {
-            public boolean onTouch(View view, MotionEvent event) {
-                mId = view.getId();
-                if (gestureDetector.onTouchEvent(event)) {
-                    return false;
-                } else {
-                    return true;
-                }
-            }
-        };
-
-//        mViewFlipper.setOnTouchListener(gestureListener);
-        image01.setOnTouchListener(gestureListener);
-        image02.setOnTouchListener(gestureListener);
-        image03.setOnTouchListener(gestureListener);
     }
 
     private class MyGestureDetector extends GestureDetector.SimpleOnGestureListener {
@@ -122,7 +154,6 @@ public class MainActivity extends Activity {
         private static final int SWIPE_THRESHOLD_VELOCITY = 200;
 
         public boolean onSingleTapUp(MotionEvent event) {
-            Log.i("id : ", String.valueOf(mId));
             loadIntent();
             return super.onSingleTapUp(event);
         }
@@ -147,20 +178,33 @@ public class MainActivity extends Activity {
     }
 
     private void loadIntent() {
-            Intent browserIntent = null;
-            switch (mId){
-                case R.id.image_01:
-                    browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.cnn.com"));
-                    break;
-                case R.id.image_02:
-                    browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
-                    break;
-                case R.id.image_03:
-                    browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.bbc.com"));
-                    break;
-            }
-            if(browserIntent != null) {
-                startActivity(browserIntent);
-            }
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(mTeam.get(mId).getLink()));
+        startActivity(browserIntent);
+
     }
+
+    /*  Save team image and link info to Firebase  */
+    /*
+    private void initTeamInfo(){
+        Firebase myFirebaseRef = new Firebase("https://view-flipper-ad.firebaseio.com/");
+
+        Team blazers = new Team();
+        blazers.setImage("http://covermyfb.com/media/covers/thumb/6335-portland-trail-blazers.jpg");
+        blazers.setLink("http://www.nba.com/blazers/");
+        Firebase firebase1 = myFirebaseRef.child("team").child("blazers");
+        firebase1.setValue(blazers);
+
+        Team timbers = new Team();
+        timbers.setImage("https://www.flagline.com/sites/default/files/styles/product_main_page/public/images/products/Portland_Timbers_Bumper_Sticker_4648.jpg");
+        timbers.setLink("http://www.timbers.com/");
+        Firebase firebase2 = myFirebaseRef.child("team").child("timbers");
+        firebase2.setValue(timbers);
+
+        Team winterhawks = new Team();
+        winterhawks.setImage("http://www.vbconline.org/wp-content/uploads/2014/11/Winterhawks-web-banner.jpg");
+        winterhawks.setLink("http://www.winterhawks.com/");
+        Firebase firebase3 = myFirebaseRef.child("team").child("winterhawks");
+        firebase3.setValue(winterhawks);
+    }
+    */
 }
