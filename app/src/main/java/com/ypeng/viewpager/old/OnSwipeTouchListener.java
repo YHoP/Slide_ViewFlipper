@@ -1,4 +1,4 @@
-package com.ypeng.viewpager;
+package com.ypeng.viewpager.old;
 
 import android.content.Context;
 import android.view.GestureDetector;

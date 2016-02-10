@@ -1,9 +1,11 @@
-package com.ypeng.viewpager;
+package com.ypeng.viewpager.old;
 
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+
+import com.ypeng.viewpager.R;
 
 import java.util.Timer;
 import java.util.TimerTask;

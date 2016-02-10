@@ -1,4 +1,4 @@
-package com.ypeng.viewpager;
+package com.ypeng.viewpager.old;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -7,6 +7,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.util.Log;
+
+import com.ypeng.viewpager.R;
 
 public class PagerAdapter extends FragmentPagerAdapter{
 
