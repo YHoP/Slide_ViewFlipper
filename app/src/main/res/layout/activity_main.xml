@@ -10,27 +10,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical" >
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:background="#ffffff"
-            android:id="@+id/image_01"
-            android:src="@drawable/image01" />
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:background="#ffffff"
-            android:id="@+id/image_02"
-            android:src="@drawable/image02" />
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:background="#ffffff"
-            android:id="@+id/image_03"
-            android:src="@drawable/image03" />
-
     </ViewFlipper>
 
 </LinearLayout>
